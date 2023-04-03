@@ -24,5 +24,7 @@ class Book < ApplicationRecord
     end
   end
 
-
+  def self.favorite_rank
+    Book.includes(:favorites).group("user_id").order('count_all DESC').count
+  end
 end
