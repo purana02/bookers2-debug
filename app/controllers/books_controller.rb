@@ -4,7 +4,9 @@ class BooksController < ApplicationController
 
   def show
     @book = Book.find(params[:id])
-    impressionist(@book, nil, unique: [:session_hash.to_s])
+    unless ViewCount.find_by(user_id: current_user.id, book_id: @book.id)
+      current_user.view_counts.create(book_id: @book.id)
+    end
     @user = @book.user
     @booknew = Book.new
     @book_comment = BookComment.new

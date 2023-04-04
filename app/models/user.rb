@@ -21,6 +21,7 @@ class User < ApplicationRecord
   has_many :entries
   has_many :messages
   has_many :rooms, through: :user_rooms
+  has_many :view_counts, dependent: :destroy
 
   def get_profile_image
     (profile_image.attached?) ? profile_image : 'no_image.jpg'
