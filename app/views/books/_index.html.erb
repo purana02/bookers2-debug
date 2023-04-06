@@ -22,7 +22,7 @@
         </td>
         <td><%= render "book_comments/counter", book: book %></td>
         <td class="view-count">閲覧数: <%= book.view_counts.count %></td>
-        <td><%= render 'rateview', book: book%></td>
+        <td><%= render 'books/rateview', book: book%></td>
     <% end %>
   </tbody>
 </table>

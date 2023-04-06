@@ -12,18 +12,32 @@
     <%= f.hidden_field :rate, id: :review_star %>
   </div>
 
-  <script>
-    let elem = document.querySelector('#star');
-    let opt = {
-      size: 36,
-      starOff:  '<%= asset_path('star-off.png') %>',
-      starOn : '<%= asset_path('star-on.png') %>',
-      starHalf: '<%= asset_path('star-half.png') %>',
-      scoreName: 'book[rate]',
-      half: false
-   };
-  raty(elem,opt);
-  </script>
+   <% if book.id.nil? %>
+    <div class="form-group" id="star">
+      <%= f.label :rate %>
+      <%= f.hidden_field :rate, id: :review_star, class: 'form-control' %>
+      <div id="post_raty"></div>
+    </div>
+    <script>
+      $(document).on('turbolinks:load', function() {
+        let elem = document.querySelector('#post_raty');
+        if (elem == null) return;
+  
+        elem.innerHTML = ""
+        let opt = {  
+          starOn: "<%= asset_path('star-on.png') %>",
+          starOff: "<%= asset_path('star-off.png') %>",
+          starHalf: "<%= asset_path('star-half.png') %>",
+          scoreName: 'book[rate]',
+        };
+        raty(elem, opt);
+      });
+    </script>
+   <% else %>
+    <div class="form-group">
+      <%= render "_rateview", book: book %>
+    </div>
+  <% end %>
 
   <div class="form-group">
     <%= f.submit class: 'btn btn-success' %>
