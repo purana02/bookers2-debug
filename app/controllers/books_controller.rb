@@ -13,13 +13,17 @@ class BooksController < ApplicationController
   end
 
   def index
-    #to  = Time.current.at_end_of_day
-    #from  = (to - 6.day).at_beginning_of_day
-    #@books = Book.all.sort {|a,b|
-      #b.favorites.where(created_at: from...to).size <=>
-      #a.favorites.where(created_at: from...to).size
-    #}
-    @books = Book.all.order("created_at DESC")
+    to  = Time.current.at_end_of_day
+    from  = (to - 6.day).at_beginning_of_day
+    if sort_params.present?
+      @books = Book.sort_books(sort_params)
+    else
+      @books = Book.all.sort {|a,b|
+        b.favorites.where(created_at: from...to).size <=>
+        a.favorites.where(created_at: from...to).size
+      }
+    end
+    @sort_list = Book.sort_list
     @book = Book.new
   end
 
@@ -65,6 +69,10 @@ class BooksController < ApplicationController
     unless @book.user_id == current_user.id
       redirect_to books_path
     end
+  end
+
+  def sort_params
+    params.permit(:sort)
   end
 
 end

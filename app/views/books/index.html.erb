@@ -9,6 +9,13 @@
     </div>
     <div class='col-md-8 offset-md-1'>
       <h2>Books</h2>
+      <%= form_with books_path do |f| %>
+        <% if @sorted.present? %>
+          <%= f.select :sort, @sort_list, selected: @sorted, onChange: "javascript: this.form.submit();" %>
+        <% else %>
+          <%= f.select :sort, @sort_list, {}, onChange: "javascript: this.form.submit();" %>
+        <% end %>
+      <% end %>
       <%= render 'index', books: @books%>
     </div>
   </div>

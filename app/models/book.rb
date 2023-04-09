@@ -45,4 +45,20 @@ class Book < ApplicationRecord
   scope :created_5day_ago, -> { where(created_at: 5.day.ago.all_day) } # 5日前
   scope :created_6day_ago, -> { where(created_at: 6.day.ago.all_day) } # 6日前
   
+  def sort_books(sort)
+    if sort[:sort] == "created_at_desc"
+      order("created_at DESC")
+    elsif sort[:sort] == "rate_desc"
+      order("rate DESC")
+    end
+  end
+  
+  scope :sort_list, ->{
+   {
+    "並び替え" => "",
+    "新しい順" => "created_at_desc",
+    "評価の高い順" => "rate_desc"
+   }
+  }
+  
 end
