@@ -4,6 +4,8 @@ class Book < ApplicationRecord
   has_many :favorites, dependent: :destroy
   has_many :book_comments, dependent: :destroy
   has_many :view_counts, dependent: :destroy
+  has_many :book_tags,dependent: :destroy
+  has_many :tags,through: :book_tags
 
   has_many :week_favorites, -> { where(created_at: ((Time.current.at_end_of_day - 6.day).at_beginning_of_day)..(Time.current.at_end_of_day)) }, class_name: 'Favorite'
 
@@ -45,20 +47,33 @@ class Book < ApplicationRecord
   scope :created_5day_ago, -> { where(created_at: 5.day.ago.all_day) } # 5日前
   scope :created_6day_ago, -> { where(created_at: 6.day.ago.all_day) } # 6日前
   
-  def sort_books(sort)
-    if sort[:sort] == "created_at_desc"
-      order("created_at DESC")
-    elsif sort[:sort] == "rate_desc"
-      order("rate DESC")
+  def save_tag(sent_tags)
+    current_tags = self.tags.pluck(:name) unless self.tags.nil?
+    old_tags = current_tags - sent_tags
+    new_tags = sent_tags - current_tags
+    old_tags.each do |old|
+      self.tags.delete　Tag.find_by(name: old)
+    end
+    new_tags.each do |new|
+      new_book_tag = Tag.find_or_create_by(name: new)
+      self.tags << new_book_tag
     end
   end
   
-  scope :sort_list, ->{
-   {
-    "並び替え" => "",
-    "新しい順" => "created_at_desc",
-    "評価の高い順" => "rate_desc"
-   }
-  }
+  #def sort_books(sort)
+    #if sort[:sort] == "created_at_desc"
+      #order("created_at DESC")
+    #elsif sort[:sort] == "rate_desc"
+      #order("rate DESC")
+    #end
+  #end
+  
+  #scope :sort_list, ->{
+   #{
+    #"並び替え" => "",
+    #"新しい順" => "created_at_desc",
+    #"評価の高い順" => "rate_desc"
+   #}
+  #}
   
 end

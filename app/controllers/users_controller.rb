@@ -5,6 +5,7 @@ class UsersController < ApplicationController
   def show
     @user = User.find(params[:id])
     @books = @user.books
+    #S@tag_list=@books.tags.all
     @book = Book.new
     @today_book =  @books.created_today
     @yesterday_book = @books.created_yesterday

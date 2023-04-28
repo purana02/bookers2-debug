@@ -10,20 +10,18 @@ class BooksController < ApplicationController
     @user = @book.user
     @booknew = Book.new
     @book_comment = BookComment.new
+    @book_tags=@book.tags
   end
 
   def index
-    to  = Time.current.at_end_of_day
-    from  = (to - 6.day).at_beginning_of_day
-    if sort_params.present?
-      @books = Book.sort_books(sort_params)
-    else
-      @books = Book.all.sort {|a,b|
-        b.favorites.where(created_at: from...to).size <=>
-        a.favorites.where(created_at: from...to).size
-      }
-    end
-    @sort_list = Book.sort_list
+    @books = Book.all.order(params[:sort])
+    #to  = Time.current.at_end_of_day
+    #from  = (to - 6.day).at_beginning_of_day
+    #@books = Book.all.sort {|a,b|
+
+        #b.favorites.where(created_at: from...to).size <=>
+        #a.favorites.where(created_at: from...to).size
+      #}
     @book = Book.new
   end
 
@@ -31,7 +29,9 @@ class BooksController < ApplicationController
     @books = Book.all
     @book = Book.new(book_params)
     @book.user_id = current_user.id
+    @tag_list=params[:book][:name].split(',')
     if @book.save
+       @book.save_tag(@tag_list)
       redirect_to book_path(@book), notice: "You have created book successfully."
     else
       @books = Book.all

@@ -20,6 +20,7 @@
           </td>
           <td><%= link_to @book.title, @book %></td>
           <td><%= @book.body %></td>
+          <td><%= @book.tags.map(&:name).join(', ') %></td>
           <td class=<%= "favorite-" + @book.id.to_s %> >
             <%= render "favorites/favorite-btn", book: @book %>
           </td>
@@ -27,11 +28,11 @@
             <%= render "book_comments/counter", book: @book %>
           </td>
           <td class="view-count">閲覧数: <%= @book.view_counts.count %></td>
+           <td><%= render "rateview", book: @book %></td>
           <td><% if @book.user == current_user %>
               <%= link_to 'Edit', edit_book_path(@book), class: "btn btn-sm btn-success" %>
               <% end %>
           </td>
-          <td><%= render "rateview", book: @book %></td>
           <td><% if @book.user == current_user %>
               <%= link_to 'Destroy', @book, method: :delete, data: { confirm: '本当に消しますか？' }, class: "btn btn-sm btn-danger"%>
               <% end %>
